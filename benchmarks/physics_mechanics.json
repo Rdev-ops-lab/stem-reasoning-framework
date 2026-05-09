@@ -1,0 +1,41 @@
+[
+  {
+    "id": "PHY-001",
+    "domain": "mechanics",
+    "difficulty": "phd",
+    "problem_text": "A block of mass 4 kg is pushed along a frictionless surface by a constant horizontal force of 50 N. Starting from rest, calculate the displacement after 2 seconds. Show each step of the reasoning.",
+    "expected_answer": "25 m",
+    "expected_steps": [
+      "sum_F = m*a",
+      "F_net = m * a",
+      "a = F/m",
+      "s = 0.5*a*t**2"
+    ]
+  },
+  {
+    "id": "PHY-002",
+    "domain": "mechanics",
+    "difficulty": "phd",
+    "problem_text": "A 2 kg pendulum bob is attached to a 1.5 m string. Calculate the period of oscillation for small angles. Use g = 9.81 m/s².",
+    "expected_answer": "2.455 s",
+    "expected_steps": [
+      "T = 2*pi*sqrt(L/g)",
+      "T = 2*pi*sqrt(1.5/9.81)",
+      "T = 2*pi*0.3909",
+      "T = 2.455"
+    ]
+  },
+  {
+    "id": "CHEM-001",
+    "domain": "thermodynamics",
+    "difficulty": "phd",
+    "problem_text": "Calculate the Gibbs free energy change (ΔG) for a reaction at 298 K where ΔH = -92 kJ/mol and ΔS = -198 J/(mol·K). Determine whether the reaction is spontaneous.",
+    "expected_answer": "ΔG = -33.0 kJ/mol, spontaneous",
+    "expected_steps": [
+      "delta_G = delta_H - T*delta_S",
+      "delta_G = -92000 - 298*(-198)",
+      "delta_G = -92000 + 59004",
+      "delta_G = -32996 J/mol"
+    ]
+  }
+]

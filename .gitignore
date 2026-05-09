@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+.coverage
+outputs/
+*.pdf
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+.pytest_cache/

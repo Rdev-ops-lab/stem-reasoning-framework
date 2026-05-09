@@ -1,0 +1,85 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, geometry, booktabs}
+\geometry{margin=1in}
+
+\title{\textbf{PhD-Level STEM Reasoning Framework}\\[0.5em]
+\large Sample Problem: Classical Mechanics}
+\author{Rishi Pal Singh \\ \texttt{github.com/Rdev-ops-lab}}
+\date{}
+
+\begin{document}
+\maketitle
+
+% ─────────────────────────────────────────
+\section*{Problem PHY-001: Newton's Second Law}
+
+A block of mass $m = 4\,\text{kg}$ is pushed along a \textbf{frictionless} surface
+by a constant horizontal force $F = 50\,\text{N}$.
+Starting from rest, calculate the displacement after $t = 2\,\text{s}$.
+
+\bigskip
+\textbf{Expected Reasoning Steps:}
+
+\begin{enumerate}
+  \item \textbf{Apply Newton's Second Law:}
+  \[
+    \sum F = ma \implies a = \frac{F}{m}
+  \]
+
+  \item \textbf{Substitute known values:}
+  \[
+    a = \frac{50\,\text{N}}{4\,\text{kg}} = 12.5\,\text{m/s}^2
+  \]
+
+  \item \textbf{Apply kinematic equation} (starting from rest, $u = 0$):
+  \[
+    s = ut + \frac{1}{2}at^2 = 0 + \frac{1}{2}(12.5)(2)^2
+  \]
+
+  \item \textbf{Calculate displacement:}
+  \[
+    \boxed{s = 25\,\text{m}}
+  \]
+\end{enumerate}
+
+\bigskip
+\hrule
+\bigskip
+
+% ─────────────────────────────────────────
+\section*{Problem CHEM-001: Gibbs Free Energy}
+
+For a reaction at $T = 298\,\text{K}$:
+\[
+  \Delta H = -92\,\text{kJ/mol}, \quad \Delta S = -198\,\text{J/(mol\cdot K)}
+\]
+
+Calculate $\Delta G$ and determine spontaneity.
+
+\bigskip
+\textbf{Expected Reasoning Steps:}
+
+\begin{enumerate}
+  \item \textbf{Gibbs equation:}
+  \[
+    \Delta G = \Delta H - T\,\Delta S
+  \]
+
+  \item \textbf{Unit alignment} (convert $\Delta H$ to J):
+  \[
+    \Delta H = -92{,}000\,\text{J/mol}
+  \]
+
+  \item \textbf{Substitute values:}
+  \[
+    \Delta G = -92{,}000 - (298)(-198) = -92{,}000 + 59{,}004
+  \]
+
+  \item \textbf{Result:}
+  \[
+    \boxed{\Delta G = -32{,}996\,\text{J/mol} \approx -33.0\,\text{kJ/mol}}
+  \]
+  Since $\Delta G < 0$, the reaction is \textbf{spontaneous} at 298 K.
+\end{enumerate}
+
+\end{document}
