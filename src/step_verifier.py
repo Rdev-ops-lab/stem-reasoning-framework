@@ -5,7 +5,7 @@ Uses SymPy for symbolic equivalence and dimensional analysis for unit checks.
 from dataclasses import dataclass
 from typing import Optional
 import re
-
+from sympy import sympify, simplify, Eq
 
 @dataclass
 class StepResult:
@@ -16,7 +16,6 @@ class StepResult:
     coherent: bool
     score: float
     notes: str = ""
-
 
 class StepVerifier:
     def verify(
@@ -48,16 +47,29 @@ class StepVerifier:
         if not expected:
             return True
         try:
-            from sympy import sympify, simplify
-            lhs = sympify(step.split("=")[0].strip()) if "=" in step else sympify(step)
-            rhs = sympify(expected.split("=")[0].strip()) if "=" in expected else sympify(expected)
-            return simplify(lhs - rhs) == 0
+            # Step aur Expected ko Equation objects mein convert karein
+            def parse_to_eq(s):
+                if "=" in s:
+                    parts = s.split("=")
+                    return Eq(sympify(parts[0].strip()), sympify(parts[1].strip()))
+                return sympify(s.strip())
+
+            expr1 = parse_to_eq(step)
+            expr2 = parse_to_eq(expected)
+
+            # Agar dono equations hain, toh check karein ki kya wo mathematically same hain
+            # SymPy simplify(lhs - rhs) equations ke liye handle karta hai
+            if isinstance(expr1, Eq) and isinstance(expr2, Eq):
+                # Equation logic: (LHS1 - RHS1) should be equivalent to (LHS2 - RHS2) or its negative
+                diff1 = expr1.lhs - expr1.rhs
+                diff2 = expr2.lhs - expr2.rhs
+                return simplify(diff1 - diff2) == 0 or simplify(diff1 + diff2) == 0
+
+            return simplify(expr1 - expr2) == 0
         except Exception:
-            # Fallback: simple string normalization
             return step.replace(" ", "").lower() == expected.replace(" ", "").lower()
 
     def _check_units(self, step: str) -> bool:
-        # Basic unit consistency check — looks for common unit mismatches
         unit_patterns = {
             r"\bm/s²\b": "acceleration",
             r"\bN\b": "force",
@@ -65,13 +77,11 @@ class StepVerifier:
             r"\bkg\b": "mass",
         }
         detected = [label for pattern, label in unit_patterns.items() if re.search(pattern, step)]
-        # No contradictory units found
         return len(set(detected)) == len(detected)
 
     def _check_coherence(self, step: str, previous: Optional[StepResult]) -> bool:
         if previous is None:
             return True
-        # If previous step failed symbolically, this step cannot be coherent
         if not previous.symbolic_correct:
             return False
         return True
@@ -81,7 +91,6 @@ class StepVerifier:
         return sum(w for ok, w in weights if ok) / sum(w for _, w in weights)
 
     def _mock_verify(self, step_num: int, description: str) -> StepResult:
-        # Deterministic mock: odd steps pass, even steps vary
         symbolic_ok = step_num % 3 != 0
         unit_ok = True
         coherent = step_num < 4
