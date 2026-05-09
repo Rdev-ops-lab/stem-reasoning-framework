@@ -1,5 +1,15 @@
 # PhD-Level STEM Reasoning Framework
 
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
+[![Framework: SymPy](https://img.shields.io/badge/Library-SymPy-green.svg)](https://www.sympy.org/)
+[![Output: LaTeX/PDF](https://img.shields.io/badge/Output-LaTeX%20%2F%20PDF-orange.svg)](https://www.latex-project.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests: Pytest](https://img.shields.io/badge/Tests-Pytest-white.svg)](https://docs.pytest.org/)
+
+---
+
+# PhD-Level STEM Reasoning Framework
+
 Step-by-step symbolic deduction engine for evaluating frontier LLMs on PhD-level Physics and Chemistry problems. Built from real benchmark work — the core insight is that **standard QA benchmarks test recall, not reasoning**. A model that produces the correct final answer via a flawed reasoning chain should not pass.
 
 This framework evaluates **reasoning chains**, not just final answers. Each solution step is verified independently against symbolic ground truth, producing a per-step correctness trace and an overall reasoning score.
