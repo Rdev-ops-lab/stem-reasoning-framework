@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Optional
 import re
 from sympy import sympify, simplify, Eq
+from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
 
 @dataclass
 class StepResult:
@@ -47,27 +48,38 @@ class StepVerifier:
         if not expected:
             return True
         try:
-            # Step aur Expected ko Equation objects mein convert karein
-            def parse_to_eq(s):
+            # Transformations taaki 'ma' ko 'm*a' samjha ja sake
+            transformations = standard_transformations + (implicit_multiplication_application,)
+
+            def parse_to_obj(s):
+                s = s.strip()
                 if "=" in s:
-                    parts = s.split("=")
-                    return Eq(sympify(parts[0].strip()), sympify(parts[1].strip()))
-                return sympify(s.strip())
+                    lhs, rhs = s.split("=")
+                    # Eq object banate hain
+                    return Eq(parse_expr(lhs, transformations=transformations), 
+                              parse_expr(rhs, transformations=transformations))
+                return parse_expr(s, transformations=transformations)
 
-            expr1 = parse_to_eq(step)
-            expr2 = parse_to_eq(expected)
+            obj1 = parse_to_obj(step)
+            obj2 = parse_to_obj(expected)
 
-            # Agar dono equations hain, toh check karein ki kya wo mathematically same hain
-            # SymPy simplify(lhs - rhs) equations ke liye handle karta hai
-            if isinstance(expr1, Eq) and isinstance(expr2, Eq):
-                # Equation logic: (LHS1 - RHS1) should be equivalent to (LHS2 - RHS2) or its negative
-                diff1 = expr1.lhs - expr1.rhs
-                diff2 = expr2.lhs - expr2.rhs
+            # Agar dono Equations (Eq) hain
+            if isinstance(obj1, Eq) and isinstance(obj2, Eq):
+                # Equation symmetric check: (LHS1 - RHS1) vs (LHS2 - RHS2)
+                # Hum check karte hain ki kya dono ka difference zero hai
+                diff1 = simplify(obj1.lhs - obj1.rhs)
+                diff2 = simplify(obj2.lhs - obj2.rhs)
+                # Ya toh diff1 == diff2 ho, ya diff1 == -diff2 (direction reversal)
                 return simplify(diff1 - diff2) == 0 or simplify(diff1 + diff2) == 0
 
-            return simplify(expr1 - expr2) == 0
+            # Agar ek equation hai aur ek expression, toh simplify karke check karein
+            return simplify(obj1 - obj2) == 0
+            
         except Exception:
-            return step.replace(" ", "").lower() == expected.replace(" ", "").lower()
+            # Fallback for non-mathematical strings
+            clean_step = re.sub(r'\s+', '', step).lower()
+            clean_expected = re.sub(r'\s+', '', expected).lower()
+            return clean_step == clean_expected
 
     def _check_units(self, step: str) -> bool:
         unit_patterns = {
@@ -91,6 +103,7 @@ class StepVerifier:
         return sum(w for ok, w in weights if ok) / sum(w for _, w in weights)
 
     def _mock_verify(self, step_num: int, description: str) -> StepResult:
+        # Mock logic as requested
         symbolic_ok = step_num % 3 != 0
         unit_ok = True
         coherent = step_num < 4
